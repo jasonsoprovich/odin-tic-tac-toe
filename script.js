@@ -17,23 +17,47 @@
       const cell = document.createElement('div');
       cell.id = cellID;
       cell.classList.add('cell');
+
+      // cell.addEventListener('click', () => {
+      //   cell.innerText = 'X';
+      // });
+
       gameBoard.appendChild(cell);
     });
-    
+
     container.appendChild(gameBoard);
     console.log('gameboard created');
   }
 })();
 
-function Player(name, marker) {
-  this.name = name;
-  this.marker = marker;
-  this.score = 0;
+function createPlayer(name, marker) {
+  let _name = name;
+  let _marker = marker;
+  let _score = 0;
+
+  return {
+    getName() {
+      return _name;
+    },
+    getMarker() {
+      return _marker;
+    },
+    getScore() {
+      return _score;
+    },
+    incrementScore() {
+      _score++;
+    }
+  };
 }
 
-const player1 = new Player('Jason','X');
-const player2 = new Player('Casey','O');
+const player1 = new createPlayer('Jason','X');
+const player2 = new createPlayer('Casey','O');
 
-Player.prototype.incrementScore = function() {
-  return this.score++;
-}
+// function gameLogic(player, location) {
+
+// }
+
+// function displayController {
+//   const cellSelection = document.querySelectorAll('cell');
+// }
