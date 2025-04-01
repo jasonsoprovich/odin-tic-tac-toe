@@ -56,3 +56,41 @@ h6 {
 #__next {
   isolation: isolate;
 }
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  grid-template-areas:
+    'A1 A2 A3'
+    'B1 B2 B3'
+    'C1 C2 C3';
+  margin-top: 5rem;
+}
+
+.cell {
+  background-color: white;
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+}
+
+.cell:hover {
+  background-color: lightgreen;
+}
+
+/* Debugging */
+.cell::after {
+  content: attr(id);
+  color: black;
+  display: none;
+}
+
+.cell:hover::after {
+  display: block;
+}
