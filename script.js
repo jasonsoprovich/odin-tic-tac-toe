@@ -18,10 +18,6 @@
       cell.id = cellID;
       cell.classList.add('cell');
 
-      // cell.addEventListener('click', () => {
-      //   cell.innerText = 'X';
-      // });
-
       gameBoard.appendChild(cell);
     });
 
@@ -51,17 +47,30 @@ function Player(name, marker) {
   };
 }
 
-function createPlayer() {
-  const player1 = new Player('Jason','X');
-  const player2 = new Player('Casey','O');
+function createPlayers() {
+  const player1Name = prompt('Player 1 - Enter Name: ');
+  const player1Marker = 'X';
+
+  const player2Name = prompt('Player 2 - Enter Name: ');
+  const player2Marker = 'O';
+
+  const player1 = Player(player1Name,player1Marker);
+  const player2 = Player(player2Name,player2Marker);
+  return {player1, player2}
 }
 
-
+document.querySelector('#new-game-btn').addEventListener('click', () => {
+  const players = createPlayers();
+  initGameboard();
+});
 // function gameLogic(player, location) {
 // if A1.innerText = A2.innerText
 // }
 
-// function displayController {
-//   const cellSelection = document.querySelectorAll('cell');
+function displayController(player,marker) {
+  cell.addEventListener('click', () => {
+    cell.innerText = `${marker}`;
+  });
 
-// }
+}
+
