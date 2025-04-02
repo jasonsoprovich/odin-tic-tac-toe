@@ -1,4 +1,4 @@
-(function initGameboard() {
+function initGameboard() {
   const container = document.querySelector('.container');
   if (container) {
     const gameBoardExists = document.querySelector('.game-board');
@@ -17,14 +17,15 @@
       const cell = document.createElement('div');
       cell.id = cellID;
       cell.classList.add('cell');
+      cell.addEventListener('click', handleCellClick);
 
       gameBoard.appendChild(cell);
     });
-
+    
     container.appendChild(gameBoard);
     console.log('gameboard created');
   }
-})();
+};
 
 function Player(name, marker) {
   let _name = name;
@@ -63,14 +64,35 @@ document.querySelector('#new-game-btn').addEventListener('click', () => {
   const players = createPlayers();
   initGameboard();
 });
+
 // function gameLogic(player, location) {
 // if A1.innerText = A2.innerText
 // }
 
-function displayController(player,marker) {
-  cell.addEventListener('click', () => {
-    cell.innerText = `${marker}`;
-  });
+let currentPlayer;
 
+function handleCellClick(e) {
+  const cell = event.target;
+
+  if (cell.innerText !== '') {
+    alert('Already Marked');
+    return;
+  }
+
+  cell.innerText = currentPlayer.getMarker();
+
+  if (checkWinCondition()) {
+    alert(`${currentPlayer.getName()} wins!`);
+    return;
+  }
+  swapPlayer();
 }
 
+function swapPlayer() {
+  currentPlayer = currentPlayer === players.player1 ? players.player2 : players.player1;
+  console.log(`${currentPlayer.getName}'s turn.`);  
+}
+
+function name(params) {
+  
+}
