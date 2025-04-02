@@ -1,4 +1,4 @@
-(function gameboard() {
+(function initGameboard() {
   const container = document.querySelector('.container');
   if (container) {
     const gameBoardExists = document.querySelector('.game-board');
@@ -30,7 +30,7 @@
   }
 })();
 
-function createPlayer(name, marker) {
+function Player(name, marker) {
   let _name = name;
   let _marker = marker;
   let _score = 0;
@@ -51,13 +51,17 @@ function createPlayer(name, marker) {
   };
 }
 
-const player1 = new createPlayer('Jason','X');
-const player2 = new createPlayer('Casey','O');
+function createPlayer() {
+  const player1 = new Player('Jason','X');
+  const player2 = new Player('Casey','O');
+}
+
 
 // function gameLogic(player, location) {
-
+// if A1.innerText = A2.innerText
 // }
 
 // function displayController {
 //   const cellSelection = document.querySelectorAll('cell');
+
 // }
