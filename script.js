@@ -1,31 +1,22 @@
-function initGameboard() {
-  const container = document.querySelector('.container');
-  if (container) {
-    const gameBoardExists = document.querySelector('.game-board');
+const GameBoard = (() => {
+  let board = Array(9).fill(null);
 
-    if (gameBoardExists) {
-      container.removeChild(gameBoardExists);
-      console.log('game board reset')
+  const resetBoard = () => {
+    board = Array(9).fill(null);
+  };
+
+  const getBoardState = () => board;
+
+  const checkMoveValidity = (index, marker) => {
+    if (index >= 0 && index < 9 && board[index] === null) {
+      board[index] = marker;
+      return true;
     }
+    return false;
+  };
 
-    const gameBoard = document.createElement('div');
-    gameBoard.id = 'game-board';
-    
-    const cells = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
-    
-    cells.forEach(cellID => {
-      const cell = document.createElement('div');
-      cell.id = cellID;
-      cell.classList.add('cell');
-      cell.addEventListener('click', handleCellClick);
-
-      gameBoard.appendChild(cell);
-    });
-    
-    container.appendChild(gameBoard);
-    console.log('gameboard created');
-  }
-};
+  return {getBoardState, checkMoveValidity, resetBoard};
+});
 
 function Player(name, marker) {
   let _name = name;
@@ -55,44 +46,25 @@ function createPlayers() {
   const player2Name = prompt('Player 2 - Enter Name: ');
   const player2Marker = 'O';
 
-  const player1 = Player(player1Name,player1Marker);
-  const player2 = Player(player2Name,player2Marker);
-  return {player1, player2}
+  const player1 = Player(player1Name, player1Marker);
+  const player2 = Player(player2Name, player2Marker);
+  return { player1, player2 }
 }
 
 document.querySelector('#new-game-btn').addEventListener('click', () => {
   const players = createPlayers();
-  initGameboard();
+  DisplayController();
 });
 
-// function gameLogic(player, location) {
-// if A1.innerText = A2.innerText
+// let currentPlayer;
+
+// if (checkWinCondition()) {
+//   alert(`${currentPlayer.getName()} wins!`);
+//   return;
 // }
-
-let currentPlayer;
-
-function handleCellClick(e) {
-  const cell = event.target;
-
-  if (cell.innerText !== '') {
-    alert('Already Marked');
-    return;
-  }
-
-  cell.innerText = currentPlayer.getMarker();
-
-  if (checkWinCondition()) {
-    alert(`${currentPlayer.getName()} wins!`);
-    return;
-  }
-  swapPlayer();
-}
+// swapPlayer();
 
 function swapPlayer() {
   currentPlayer = currentPlayer === players.player1 ? players.player2 : players.player1;
   console.log(`${currentPlayer.getName}'s turn.`);  
-}
-
-function name(params) {
-  
 }
