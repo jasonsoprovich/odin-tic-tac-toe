@@ -62,8 +62,24 @@ const GameController = (() => {
     return null;
   };
 
-});
+  const playerTurn = (index) => {
+    if (gameOver) return false;
 
+    const activePlayer = getActivePlayer();
+
+    if (GameBoard.checkMoveValidity(index,activePlayer.marker)) {
+      const result = checkWinCondition();
+
+      if (result) {
+        gameOver = true;
+        return {gameOver: true, result};
+      }
+      swapActivePlayer();
+      return{gameOver:false, result:null};
+    }
+    return false;
+  };
+});
 
 document.querySelector('#new-game-btn').addEventListener('click', () => {
   gameBoard();
