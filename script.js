@@ -18,53 +18,54 @@ const GameBoard = (() => {
   return {getBoardState, checkMoveValidity, resetBoard};
 });
 
-function Player(name, marker) {
-  let _name = name;
-  let _marker = marker;
-  let _score = 0;
+const Player = (name, marker) => {
+  return { name, marker };
+};
 
-  return {
-    getName() {
-      return _name;
-    },
-    getMarker() {
-      return _marker;
-    },
-    getScore() {
-      return _score;
-    },
-    incrementScore() {
-      _score++;
-    }
+const GameController = (() => {
+  let players = [];
+  let activePlayer = 0;
+  let gameOver = false;
+
+  const newGame = () => {
+    players = [
+      Player('Player 1', 'X'),
+      Player('Player 2', 'O')
+    ];
+    activePlayer = 0;
+    gameOver = false;
+    Gameboard.reset();
   };
-}
 
-function createPlayers() {
-  const player1Name = prompt('Player 1 - Enter Name: ');
-  const player1Marker = 'X';
+  const getActivePlayer = () => players[activePlayer];
 
-  const player2Name = prompt('Player 2 - Enter Name: ');
-  const player2Marker = 'O';
+  const swapActivePlayer = () => {
+    activePlayer = activePlayer === 0 ? 1 : 0;
+  };
 
-  const player1 = Player(player1Name, player1Marker);
-  const player2 = Player(player2Name, player2Marker);
-  return { player1, player2 }
-}
+  const checkWinCondition = () => {
+    const boardState = GameBoard.getBoardState();
+    const winConditions = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
 
-document.querySelector('#new-game-btn').addEventListener('click', () => {
-  const players = createPlayers();
-  DisplayController();
+    for (const winCondition of winConditions) {
+      const [a,b,c] = winCondition;
+      if (board[a] && board[a] === board[b] && board[a] ===board[c]){
+        return board[a];
+      }
+    }
+
+    if (!board.includes(null)) return 'draw';
+    return null;
+  };
+
 });
 
-// let currentPlayer;
 
-// if (checkWinCondition()) {
-//   alert(`${currentPlayer.getName()} wins!`);
-//   return;
-// }
-// swapPlayer();
-
-function swapPlayer() {
-  currentPlayer = currentPlayer === players.player1 ? players.player2 : players.player1;
-  console.log(`${currentPlayer.getName}'s turn.`);  
-}
+document.querySelector('#new-game-btn').addEventListener('click', () => {
+  gameBoard();
+  gameController();
+});
