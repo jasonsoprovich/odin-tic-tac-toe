@@ -36,7 +36,7 @@ const GameLogic = (() => {
       ];
       activePlayer = 0;
       gameOver = false;
-      Gameboard.reset();
+      GameBoard.resetBoard();
     };
 
     const getActivePlayer = () => players[activePlayer];
@@ -55,7 +55,7 @@ const GameLogic = (() => {
 
       for (const winCondition of winConditions) {
         const [a,b,c] = winCondition;
-        if (board[a] && board[a] === board[b] && board[a] ===board[c]){
+        if (boardState[a] && boardState[a] === boardState[b] && boardState[a] ===board[c]){
           return board[a];
         }
       }
@@ -92,7 +92,7 @@ const GameLogic = (() => {
     const restartButton = document.getElementById('new-game-btn');    
 
     const newGame = () => {
-      createBoard();
+      createGameBoard();
       updateStatus(`Player X's turn.`);
 
       restartButton.addEventListener('click', () => {
@@ -102,7 +102,7 @@ const GameLogic = (() => {
       });
     };
 
-      createGameBoard = () => {
+      const createGameBoard = () => {
         boardElement.innerHTML = '';
 
         for (let i = 0; i < 9; i++) {
@@ -113,7 +113,7 @@ const GameLogic = (() => {
           cell.addEventListener('click', () => {
             const result = gameController.playerTurn(i);
             if (result) {
-              updateBard();
+              updateBoard();
 
               if (result.gameOver) {
                 if (result.result === 'draw') {
@@ -123,7 +123,7 @@ const GameLogic = (() => {
                   }
               } else {
                 const activePlayer = GameController.getActivePlayer();
-                updateStatus(`Player ${currentPlayer.marker}'s turn`);
+                updateStatus(`Player ${activePlayerPlayer.marker}'s turn`);
               }
             }
           });
@@ -131,11 +131,25 @@ const GameLogic = (() => {
           boardElement.appendChild(cell);
         }
       };
-  });
 
+      const updateBoard = () => {
+        const board = GameBoard.getBoardState();
+        const cells = boardElement.querySelectorAll('.cell');
+
+        cells.forEach((cell, index) => {
+          cells.textContent = board[index] || '';
+        });
+      };
+
+      const updateStatus = (status) => {
+        statusElement.textContent = status;
+      };
+  })();
+
+  const newGame = () => {
+    gameController.newGame();
+    DisplayController.newGame();
+  };
+  
+  return { newGame };
 })();
-
-document.querySelector('#new-game-btn').addEventListener('click', () => {
-  gameBoard();
-  gameController();
-});

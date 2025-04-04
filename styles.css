@@ -62,7 +62,7 @@ h6 {
   justify-content: center;
 }
 
-#game-board {
+/* #game-board {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
@@ -71,7 +71,7 @@ h6 {
     'B1 B2 B3'
     'C1 C2 C3';
   margin-top: 5rem;
-}
+} */
 
 .cell {
   background-color: white;
