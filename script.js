@@ -1,5 +1,4 @@
 const GameLogic = (() => {
-
   const GameBoard = (() => {
     let board = Array(9).fill(null);
 
@@ -18,7 +17,7 @@ const GameLogic = (() => {
     };
 
     return {getBoardState, checkMoveValidity, resetBoard};
-  });
+  })();
 
   const Player = (name, marker) => {
     return { name, marker };
@@ -55,21 +54,21 @@ const GameLogic = (() => {
 
       for (const winCondition of winConditions) {
         const [a,b,c] = winCondition;
-        if (boardState[a] && boardState[a] === boardState[b] && boardState[a] ===board[c]){
-          return board[a];
+        if (boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c]){
+          return boardState[a];
         }
       }
 
-      if (!board.includes(null)) return 'draw';
+      if (!boardState.includes(null)) return 'draw';
       return null;
     };
 
     const playerTurn = (index) => {
       if (gameOver) return false;
 
-      const activePlayer = getActivePlayer();
+      const player = getActivePlayer();
 
-      if (GameBoard.checkMoveValidity(index,activePlayer.marker)) {
+      if (GameBoard.checkMoveValidity(index, player.marker)) {
         const result = checkWinCondition();
 
         if (result) {
@@ -77,11 +76,12 @@ const GameLogic = (() => {
           return {gameOver: true, result};
         }
         swapActivePlayer();
-        return{gameOver:false, result:null};
+        return {gameOver: false, result: null};
       }
       return false;
     };
-    const isGameOver = () => gameover;
+    
+    const isGameOver = () => gameOver;
 
     return {newGame, getActivePlayer, playerTurn, isGameOver};
   })();
@@ -91,65 +91,85 @@ const GameLogic = (() => {
     const statusElement = document.getElementById('game-status');
     const restartButton = document.getElementById('new-game-btn');    
 
-    const newGame = () => {
-      createGameBoard();
-      updateStatus(`Player X's turn.`);
 
-      restartButton.addEventListener('click', () => {
-        gameController.newGame();
-        updateBoard();
-        updateStatus(`Player X's turn.`);
+    const init = () => {
+      if (restartButton) {
+        restartButton.addEventListener('click', () => {
+          startNewGame();
+        });
+      }
+    
+      createGameBoard();
+      updateStatus('Click "New Game" to start playing');
+    };
+
+    const startNewGame = () => {
+      GameController.newGame();
+      updateBoard();
+      updateStatus(`Player X's turn.`);
+    };
+
+    const createGameBoard = () => {
+      if (!boardElement) {
+        console.error('Game board element not found');
+        return;
+      }
+      
+      boardElement.innerHTML = '';
+
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.index = i;
+
+        cell.addEventListener('click', () => {
+          const result = GameController.playerTurn(i);
+          if (result) {
+            updateBoard();
+
+            if (result.gameOver) {
+              if (result.result === 'draw') {
+                updateStatus('Draw Game!');
+              } else {
+                updateStatus(`Player ${result.result} wins!`);
+              }
+            } else {
+              const player = GameController.getActivePlayer();
+              updateStatus(`Player ${player.marker}'s turn`);
+            }
+          }
+        });
+
+        boardElement.appendChild(cell);
+      }
+    };
+
+    const updateBoard = () => {
+      const boardState = GameBoard.getBoardState();
+      const cells = boardElement.querySelectorAll('.cell');
+
+      cells.forEach((cell, index) => {
+        cell.textContent = boardState[index] || '';
       });
     };
 
-      const createGameBoard = () => {
-        boardElement.innerHTML = '';
-
-        for (let i = 0; i < 9; i++) {
-          const cell = document.createElement('div');
-          cell.classList.add('cell');
-          cell.dataset.index = i;
-
-          cell.addEventListener('click', () => {
-            const result = gameController.playerTurn(i);
-            if (result) {
-              updateBoard();
-
-              if (result.gameOver) {
-                if (result.result === 'draw') {
-                  updateStatus('Draw Game!');
-                  } else {
-                    updateStatus(`Player ${result.result} wins!`)
-                  }
-              } else {
-                const activePlayer = GameController.getActivePlayer();
-                updateStatus(`Player ${activePlayerPlayer.marker}'s turn`);
-              }
-            }
-          });
-
-          boardElement.appendChild(cell);
-        }
-      };
-
-      const updateBoard = () => {
-        const board = GameBoard.getBoardState();
-        const cells = boardElement.querySelectorAll('.cell');
-
-        cells.forEach((cell, index) => {
-          cells.textContent = board[index] || '';
-        });
-      };
-
-      const updateStatus = (status) => {
+    const updateStatus = (status) => {
+      if (statusElement) {
         statusElement.textContent = status;
-      };
+      }
+    };
+
+    return { init, startNewGame, updateBoard, updateStatus };
   })();
 
-  const newGame = () => {
-    gameController.newGame();
-    DisplayController.newGame();
+  const init = () => {
+    DisplayController.init();
   };
   
-  return { newGame };
+  return { init };
 })();
+
+// Initialize the UI when the DOM is loaded, but wait for "New Game" click to start playing
+document.addEventListener('DOMContentLoaded', () => {
+  GameLogic.init();
+});
