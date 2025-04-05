@@ -161,6 +161,13 @@ const GameLogic = (() => {
           });
         }
       }
+
+      if (boardElement) {
+        const cells = boardElement.querySelectorAll('.cell');
+        cells.forEach(cell => {
+          cell.classList.remove('winner');
+        });
+      }
       
       GameController.newGame(currentPlayer1Name, currentPlayer2Name);
       

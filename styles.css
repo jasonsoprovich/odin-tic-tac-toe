@@ -6,7 +6,7 @@
   --text-color: #212529;
   --accent-color: #4361ee;
   --win-color: #63c73550;
-  --marker-color: orange;
+  --marker-color: var(--accent-color);
 }
 
 *,
