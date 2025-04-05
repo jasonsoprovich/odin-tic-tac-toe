@@ -90,22 +90,34 @@ const GameLogic = (() => {
     const boardElement = document.getElementById('game-board');
     const statusElement = document.getElementById('game-status');
     const restartButton = document.getElementById('new-game-btn');    
-
+    let gameboardCreated = false;
 
     const init = () => {
+      if (statusElement) {
+        statusElement.textContent = 'Click "New Game" to start playing';
+      }
+      
       if (restartButton) {
         restartButton.addEventListener('click', () => {
           startNewGame();
         });
       }
-    
-      createGameBoard();
-      updateStatus('Click "New Game" to start playing');
     };
 
     const startNewGame = () => {
       GameController.newGame();
-      updateBoard();
+      
+      if (!gameboardCreated) {
+        createGameBoard();
+        gameboardCreated = true;
+      } else {
+        updateBoard();
+      }
+      
+      if (boardElement) {
+        boardElement.style.display = 'grid';
+      }
+      
       updateStatus(`Player X's turn.`);
     };
 
@@ -159,17 +171,21 @@ const GameLogic = (() => {
       }
     };
 
-    return { init, startNewGame, updateBoard, updateStatus };
+    return { init, startNewGame };
   })();
 
   const init = () => {
     DisplayController.init();
+    
+    const boardElement = document.getElementById('game-board');
+    if (boardElement) {
+      boardElement.style.display = 'none';
+    }
   };
   
   return { init };
 })();
 
-// Initialize the UI when the DOM is loaded, but wait for "New Game" click to start playing
 document.addEventListener('DOMContentLoaded', () => {
   GameLogic.init();
 });

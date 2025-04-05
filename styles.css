@@ -66,10 +66,10 @@ h6 {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
-  grid-template-areas:
+  /* grid-template-areas:
     'A1 A2 A3'
     'B1 B2 B3'
-    'C1 C2 C3';
+    'C1 C2 C3'; */
   margin-top: 5rem;
 }
 
