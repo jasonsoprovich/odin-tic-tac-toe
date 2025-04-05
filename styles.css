@@ -5,16 +5,14 @@
   --border-color: #dee2e6;
   --text-color: #212529;
   --accent-color: #4361ee;
-  --win-color: #38b000;
+  --win-color: #63c73550;
+  --marker-color: orange;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-* {
   margin: 0;
   padding: 0;
 }
@@ -22,7 +20,7 @@
 body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Helvetica', sans-serif;
   color: var(--text-color);
   background-color: var(--main-bg-color);
   padding: 2rem;
@@ -136,11 +134,6 @@ button:hover {
   transform: translateY(-2px);
 }
 
-#status {
-  margin: 20px 0;
-  font-size: 20px;
-}
-
 #game-status {
   margin: 1.5rem 0;
   font-size: 1.2rem;
@@ -174,10 +167,32 @@ input[type="text"] {
   border-radius: 4px;
 }
 
-.cell:has(content: "X") {
-  color: var(--accent-color);
+.cell[data-marker="X"] {
+  color: var(--marker-color);
 }
 
-.cell:has(content: "O") {
-  color: var(--text-color);
+.cell[data-marker="O"] {
+  color: var(--marker-color);
+}
+
+.cell.winner {
+  background-color: var(--win-color);
+  animation: winPulse 1.5s infinite;
+}
+
+@keyframes winPulse {
+  0% {
+    background-color: var(--win-color);
+    box-shadow: 0 0 0 0 rgba(56, 176, 0, 0.7);
+  }
+
+  70% {
+    background-color: var(--win-color);
+    box-shadow: 0 0 0 10px rgba(56, 176, 0, 0);
+  }
+
+  100% {
+    background-color: var(--win-color);
+    box-shadow: 0 0 0 0 rgba(56, 176, 0, 0);
+  }
 }

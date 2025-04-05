@@ -55,11 +55,14 @@ const GameLogic = (() => {
       for (const winCondition of winConditions) {
         const [a,b,c] = winCondition;
         if (boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c]){
-          return boardState[a];
+          return {
+            marker: boardState[a],
+            winningCells: [a, b, c]
+          };
         }
       }
 
-      if (!boardState.includes(null)) return 'draw';
+      if (!boardState.includes(null)) return { marker: 'draw' };
       return null;
     };
 
@@ -94,15 +97,12 @@ const GameLogic = (() => {
     let gameboardCreated = false;
     let playerFormVisible = true;
     
-    // Keep track of player names
     let currentPlayer1Name = 'Player 1';
     let currentPlayer2Name = 'Player 2';
 
     const init = () => {
-      // Create the player form first
       setupPlayerForm();
       
-      // Initially hide the game board and controls
       if (boardElement) boardElement.style.display = 'none';
       if (statusElement) statusElement.style.display = 'none';
       if (gameControlsElement) gameControlsElement.style.display = 'none';
@@ -129,7 +129,6 @@ const GameLogic = (() => {
 
       container.prepend(formContainer);
       
-      // Set up the New Game button in the form
       const newGameBtnForm = document.getElementById('new-game-btn-form');
       if (newGameBtnForm) {
         newGameBtnForm.addEventListener('click', () => {
@@ -140,24 +139,20 @@ const GameLogic = (() => {
 
     const startNewGame = (isFirstGame = false) => {
       if (isFirstGame && playerFormVisible) {
-        // Get player names from the form if this is the first game
         const player1Input = document.getElementById('player1');
         const player2Input = document.getElementById('player2');
         
         if (player1Input) currentPlayer1Name = player1Input.value || 'Player 1';
         if (player2Input) currentPlayer2Name = player2Input.value || 'Player 2';
         
-        // Hide the form
         const formContainer = document.getElementById('add-players');
         if (formContainer) formContainer.style.display = 'none';
         playerFormVisible = false;
         
-        // Show the game elements
         if (boardElement) boardElement.style.display = 'grid';
         if (statusElement) statusElement.style.display = 'block';
         if (gameControlsElement) gameControlsElement.style.display = 'block';
         
-        // Set up the New Game button in the game controls
         const newGameBtn = document.getElementById('new-game-btn');
         if (newGameBtn) {
           newGameBtn.textContent = 'Reset Game';
@@ -167,10 +162,8 @@ const GameLogic = (() => {
         }
       }
       
-      // Start or reset the game with the current player names
       GameController.newGame(currentPlayer1Name, currentPlayer2Name);
       
-      // Create or update the game board
       if (!gameboardCreated) {
         createGameBoard();
         gameboardCreated = true;
@@ -178,7 +171,6 @@ const GameLogic = (() => {
         updateBoard();
       }
       
-      // Update the status
       updateStatus(`${currentPlayer1Name}'s turn (X)`);
     };
 
@@ -198,10 +190,18 @@ const GameLogic = (() => {
             updateBoard();
 
             if (result.gameOver) {
-              if (result.result === 'draw') {
+              if (result.result.marker === 'draw') {
                 updateStatus('Draw Game!');
               } else {
-                const winner = result.result === 'X' ? currentPlayer1Name : currentPlayer2Name;
+                const winningCells = result.result.winningCells;
+                if (winningCells) {
+                  const cells = boardElement.querySelectorAll('.cell');
+                  winningCells.forEach(index => {
+                    cells[index].classList.add('winner');
+                  });
+                }
+                
+                const winner = result.result.marker === 'X' ? currentPlayer1Name : currentPlayer2Name;
                 updateStatus(`${winner} wins!`);
               }
             } else {
@@ -224,6 +224,11 @@ const GameLogic = (() => {
 
       cells.forEach((cell, index) => {
         cell.textContent = boardState[index] || '';
+        if (boardState[index]) {
+          cell.dataset.marker = boardState[index];
+        } else {
+          delete cell.dataset.marker;
+        }
       });
     };
 
